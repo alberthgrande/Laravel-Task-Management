@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Category;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+
+class CategoryController extends Controller
+{
+    public function index()
+    {
+        return Inertia::render('Category/Index'); 
+    }
+
+    public function create()
+    {
+        return Inertia::render('Category/Create');
+    }
+
+    public function edit($id)
+    {
+        $category = Category::findOrFail($id);
+        return Inertia::render('Category/Edit', [
+            'category' => $category,
+        ]);
+    }
+
+}
