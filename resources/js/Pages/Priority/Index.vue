@@ -38,12 +38,20 @@ const deletePriority = async (id) => {
 
     if (result.isConfirmed) {
         try {
-            await axios.delete(`/api/priorities/${id}`);
+            const response = await axios.delete(`/api/priorities/${id}`);
             priorities.value = priorities.value.filter((cat) => cat.id !== id);
-            Swal.fire("Deleted!", "Priority has been deleted.", "success");
+
+            const message = response.data.message;
+            Swal.fire("Deleted!", message, "success");
         } catch (error) {
-            console.error("Delete failed:", error);
-            Swal.fire("Error", "Something went wrong.", "error");
+            const message =
+                error.response?.data?.message || "An unknown error occurred.";
+
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: message,
+            });
         }
     }
 };
@@ -123,6 +131,17 @@ const deletePriority = async (id) => {
                                         </td>
                                         <td class="px-6 py-4">
                                             <div class="flex gap-4">
+                                                <Link
+                                                    :href="
+                                                        route('priority.show', {
+                                                            id: priority.id,
+                                                        })
+                                                    "
+                                                    class="text-blue-600 hover:underline"
+                                                >
+                                                    View
+                                                </Link>
+
                                                 <Link
                                                     :href="
                                                         route('priority.edit', {

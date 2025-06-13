@@ -18,11 +18,17 @@ class PriorityController extends Controller
         return Inertia::render('Priority/Create');
     }
 
+    public function show($id)
+    {
+        return Inertia::render('Priority/View', [
+            'priority' => Priority::findOrFail($id),
+        ]);
+    }
+
     public function edit($id)
     {
-        $priority = Priority::findOrFail($id);
         return Inertia::render('Priority/Edit', [
-            'priority' => $priority,
+            'priority' => Priority::findOrFail($id),
         ]);
     }
 }

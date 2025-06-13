@@ -9,10 +9,6 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { ref } from "vue";
 
-const props = defineProps({
-    category: Object,
-});
-
 const form = useForm({
     name: "",
 });
@@ -37,14 +33,16 @@ const submitCategory = async () => {
         });
 
         if (result.isConfirmed) {
-            await axios.post(`/api/categories`, {
+            const response = await axios.post(`/api/priorities`, {
                 name: form.name,
             });
 
-            Swal.fire("Success!", "Category has been added.", "success");
+            const message = response.data.message;
+
+            Swal.fire("Success!", message, "success");
 
             form.reset();
-            router.visit("/categories");
+            router.visit("/priorities");
         }
     } catch (error) {
         if (error.response && error.response.data.errors) {
@@ -66,10 +64,13 @@ const submitCategory = async () => {
                 }
             }, 1000);
         } else {
+            const message =
+                error.response?.data?.message || "An unknown error occurred.";
+
             Swal.fire({
                 icon: "error",
                 title: "Error!",
-                text: "There was an error creating the category.",
+                text: message,
             });
         }
     }

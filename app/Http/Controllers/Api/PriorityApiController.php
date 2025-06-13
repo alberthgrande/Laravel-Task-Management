@@ -5,23 +5,43 @@ namespace App\Http\Controllers\Api;
 use App\Models\Priority;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PriorityResource;
+use App\Services\PriorityService;
 use Illuminate\Http\Request;
 
 class PriorityApiController extends Controller
 {
+
+    protected $priorityService;
+
+    public function __construct(PriorityService $priorityService) {
+        $this->priorityService = $priorityService;
+    }
+
     public function index()
     {
-        $priorities = Priority::latest()->get();
-        return PriorityResource::collection($priorities);
+        return PriorityResource::collection($this->priorityService->getAllPriorities());
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name',
+            'name' => 'required|string|max:255|unique:priorities,name',
         ]);
 
-        return Priority::create($validated);
+        $store = $this->priorityService->create($validated);
+
+        if($store) {
+            return response()->json([
+                "success" => true,
+                "message" => "Priority created successfully",
+            ], 201);
+        }
+        else {
+            return response()->json([
+                "success" => true,
+                "message" => "Failed to priority category.",
+            ], 500);
+        }
     }
 
     public function update(Request $request, Priority $priority)
@@ -30,15 +50,38 @@ class PriorityApiController extends Controller
             'name' => 'required|string|max:255|unique:categories,name,' . $priority->id,
         ]);
 
-        $priority->update($validated);
+        $update = $this->priorityService->update($priority, $validated);
 
-        return response()->json($priority);
+        if($update) {
+            return response()->json([
+                "success" => true,
+                "message" => "Priority updated successfully."
+            ], 200);
+        }
+        else {
+            return response()->json([
+                "success" => false,
+                "message" => "Failed to update priority."
+            ], 500);
+        }
     }
 
     public function destroy(Priority $priority)
     {
-        $priority->delete();
+        $delete = $this->priorityService->delete($priority);
+
+        if($delete) {
+            return response()->json([
+                "success" => true,
+                "message" => "Priority deleted successfully."
+            ], 200);
+        }
+        else {
+            return response()->json([
+                "success" => true,
+                "message" => "Failed to delete priority."
+            ], 500);
+        }
         
-        return response()->json(['message' => 'Priority deleted successfully.']);
     }
 }

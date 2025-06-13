@@ -8,12 +8,12 @@ import InputError from "@/Components/InputError.vue";
 import Swal from "sweetalert2";
 import axios from "axios";
 
-const props = defineProps({
+const { priority } = defineProps({
     priority: Object, // The proirity object passed from the controller
 });
 
 const form = useForm({
-    name: props.priority.name, // Initialize form with existing category name
+    name: priority.name, // Initialize form with existing category name
 });
 
 const submitEdit = async () => {
@@ -34,22 +34,26 @@ const submitEdit = async () => {
         });
 
         if (result.isConfirmed) {
-            await axios.put(`/api/priorities/${props.priority.id}`, {
+            const response = await axios.put(`/api/priorities/${priority.id}`, {
                 name: form.name,
             });
 
-            Swal.fire("Success!", "Priority has been updated.", "success");
+            const message = response.data.message;
+
+            Swal.fire("Success!", message, "success");
 
             form.reset();
             router.visit("/priorities");
         }
     } catch (error) {
+        const message =
+            error.response?.data?.message || "An unknown error occurred.";
+
         Swal.fire({
             icon: "error",
             title: "Error!",
-            text: "There was an error updating the priority.",
+            text: message,
         });
-        console.error("Update failed:", error);
     }
 };
 </script>

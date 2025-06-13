@@ -18,6 +18,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/priorities', [PriorityController::class, 'index'])->name('priority.index');
     Route::get('/priorities/create', [PriorityController::class, 'create'])->name('priority.create');
     Route::get('/priorities/{id}/edit', [PriorityController::class, 'edit'])->name('priority.edit');
+    Route::get('/priorities/{id}', [PriorityController::class, 'show'])->name('priority.show');
 
     Route::get('/statuses', [StatusController::class, 'index'])->name('status.index');
     Route::get('/statuses/create', [StatusController::class, 'create'])->name('status.create');
