@@ -9,10 +9,6 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { ref } from "vue";
 
-const props = defineProps({
-    category: Object,
-});
-
 const form = useForm({
     name: "",
 });
@@ -37,14 +33,28 @@ const submitStatus = async () => {
         });
 
         if (result.isConfirmed) {
-            await axios.post(`/api/categories`, {
+            const response = await axios.post(`/api/statuses`, {
                 name: form.name,
             });
 
-            Swal.fire("Success!", "Status has been added.", "success");
+            const message = response.data.message;
+            let timerInterval;
+            Swal.fire({
+                title: "Success!",
+                text: message,
+                icon: "success",
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                willClose: () => {
+                    clearInterval(timerInterval);
+                },
+            });
 
             form.reset();
-            router.visit("/categories");
+            router.visit("/statuses");
         }
     } catch (error) {
         if (error.response && error.response.data.errors) {
@@ -52,10 +62,6 @@ const submitStatus = async () => {
                 "name",
                 error.response.data.errors.name?.[0] || "Validation error"
             );
-
-            // setTimeout(() => {
-            //     form.clearErrors("name");
-            // }, 3000);
 
             countdown.value = 3;
             const interval = setInterval(() => {
@@ -66,10 +72,13 @@ const submitStatus = async () => {
                 }
             }, 1000);
         } else {
+            const message =
+                error.response?.data?.message || "An unknown error occurred.";
+
             Swal.fire({
                 icon: "error",
                 title: "Error!",
-                text: "There was an error creating the category.",
+                text: message,
             });
         }
     }

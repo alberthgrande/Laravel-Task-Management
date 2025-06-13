@@ -8,12 +8,12 @@ import InputError from "@/Components/InputError.vue";
 import Swal from "sweetalert2";
 import axios from "axios";
 
-const props = defineProps({
-    status: Object, // The proirity object passed from the controller
+const { status } = defineProps({
+    status: Object,
 });
 
 const form = useForm({
-    name: props.status.name, // Initialize form with existing category name
+    name: status.name,
 });
 
 const submitEdit = async () => {
@@ -34,11 +34,26 @@ const submitEdit = async () => {
         });
 
         if (result.isConfirmed) {
-            await axios.put(`/api/statuses/${props.status.id}`, {
+            const response = await axios.put(`/api/statuses/${status.id}`, {
                 name: form.name,
             });
 
-            Swal.fire("Success!", "Status has been updated.", "success");
+            const message = response.data.message;
+            let timerInterval;
+
+            Swal.fire({
+                title: "Success!",
+                text: message,
+                icon: "success",
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                willClose: () => {
+                    clearInterval(timerInterval);
+                },
+            });
 
             form.reset();
             router.visit("/statuses");

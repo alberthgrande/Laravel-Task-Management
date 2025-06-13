@@ -23,6 +23,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/statuses', [StatusController::class, 'index'])->name('status.index');
     Route::get('/statuses/create', [StatusController::class, 'create'])->name('status.create');
     Route::get('/statuses/{id}/edit', [StatusController::class, 'edit'])->name('status.edit');
+    Route::get('/statuses/{id}', [StatusController::class, 'show'])->name('status.show');
     
     
     Route::get('/tasks', [TaskController::class, 'index'])->name('task.index');

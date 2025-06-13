@@ -5,40 +5,83 @@ namespace App\Http\Controllers\Api;
 use App\Models\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StatusResource;
+use App\Services\StatusService;
 use Illuminate\Http\Request;
 
 class StatusApiController extends Controller
 {
+    protected $statusService;
+
+    public function __construct(StatusService $statusService) {
+        $this->statusService = $statusService;
+    }
+
     public function index()
     {
-        $priorities = Status::latest()->get();
-        return StatusResource::collection($priorities);
+        return StatusResource::collection($this->statusService->getAllStatuses());
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name',
+            'name' => 'required|string|max:255|unique:statuses,name',
         ]);
 
-        return Status::create($validated);
+        $store = $this->statusService->create($validated);
+
+        if($store) {
+            return response()->json([
+                "success" => true,
+                "message" => "Status created successfully."
+            ], 201);
+        }
+        else {
+            return response()->json([
+                "success" => false,
+                "message" => "Failed to create status."
+            ], 500);
+        }
     }
 
     public function update(Request $request, Status $status)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name,' . $status->id,
+            'name' => 'required|string|max:255|unique:statuses,name,' . $status->id,
         ]);
 
-        $status->update($validated);
+        $update = $this->statusService->update($status, $validated);
+
+        if($update) {
+            return response()->json([
+                "success" => true,
+                "message" => "Status updated successfully."
+            ], 200);
+        }
+        else {
+            return response()->json([
+                "success" => false,
+                "message" => "Failed to update status."
+            ], 500);
+        }
 
         return response()->json($status);
     }
 
     public function destroy(Status $status)
     {
-        $status->delete();
+        $delete = $this->statusService->delete($status);
         
-        return response()->json(['message' => 'Status deleted successfully.']);
+        if($delete) {
+            return response()->json([
+                "success" => true,
+                "message" => "Status deleted successfully."
+            ], 200);
+        }
+        else {
+            return response()->json([
+                "success" => false,
+                "message" => "Failed to delete status."
+            ], 200);
+        }
     }
 }

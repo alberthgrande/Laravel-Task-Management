@@ -39,11 +39,24 @@ const deleteCategory = async (id) => {
     if (result.isConfirmed) {
         try {
             const res = await axios.delete(`/api/categories/${id}`);
-            const message = res.data.message;
-
             categories.value = categories.value.filter((cat) => cat.id !== id);
 
-            Swal.fire("Deleted!", message, "success");
+            const message = res.data.message;
+            let timerInterval;
+
+            Swal.fire({
+                title: "Success!",
+                text: message,
+                icon: "success",
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                willClose: () => {
+                    clearInterval(timerInterval);
+                },
+            });
         } catch (error) {
             const message =
                 error.response?.data?.message || "An unknown error occurred.";

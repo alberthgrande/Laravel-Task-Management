@@ -39,8 +39,21 @@ const submitEdit = async () => {
             });
 
             const message = response.data.message;
+            let timerInterval;
 
-            Swal.fire("Success!", message, "success");
+            Swal.fire({
+                title: "Success!",
+                text: message,
+                icon: "success",
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                willClose: () => {
+                    clearInterval(timerInterval);
+                },
+            });
 
             form.reset();
             router.visit("/categories");

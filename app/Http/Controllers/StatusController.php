@@ -18,11 +18,17 @@ class StatusController extends Controller
         return Inertia::render('Status/Create');
     }
 
+    public function show($id)
+    {
+        return Inertia::render('Status/View', [
+            'status' => Status::findOrFail($id),
+        ]);
+    }
+
     public function edit($id)
     {
-        $status =  Status::findOrFail($id);
         return Inertia::render('Status/Edit', [
-            'status' => $status,
+            'status' => Status::findOrFail($id),
         ]);
     }
 }

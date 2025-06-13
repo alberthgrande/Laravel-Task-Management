@@ -38,9 +38,25 @@ const deleteStatus = async (id) => {
 
     if (result.isConfirmed) {
         try {
-            await axios.delete(`/api/statuses/${id}`);
+            const response = await axios.delete(`/api/statuses/${id}`);
             statuses.value = statuses.value.filter((cat) => cat.id !== id);
-            Swal.fire("Deleted!", "Status has been deleted.", "success");
+
+            const message = response.data.message;
+            let timerInterval;
+
+            Swal.fire({
+                title: "Success!",
+                text: message,
+                icon: "success",
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                willClose: () => {
+                    clearInterval(timerInterval);
+                },
+            });
         } catch (error) {
             console.error("Delete failed:", error);
             Swal.fire("Error", "Something went wrong.", "error");
@@ -123,6 +139,17 @@ const deleteStatus = async (id) => {
                                         </td>
                                         <td class="px-6 py-4">
                                             <div class="flex gap-4">
+                                                <Link
+                                                    :href="
+                                                        route('status.show', {
+                                                            id: status.id,
+                                                        })
+                                                    "
+                                                    class="text-blue-600 hover:underline"
+                                                >
+                                                    View
+                                                </Link>
+
                                                 <Link
                                                     :href="
                                                         route('status.edit', {
