@@ -5,18 +5,15 @@ namespace App\Http\Controllers\Api;
 use App\Models\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
-use App\Services\CategoryService;
+// use App\Services\CategoryService;
+use App\Interfaces\CategoryServiceInterface;
+use App\DTOs\CategoryDTO;
 use Illuminate\Http\Request;
 
 class CategoryApiController extends Controller
 {
 
-    protected $categoryService;
-
-    public function __construct(CategoryService $categoryService) 
-    {
-        $this->categoryService = $categoryService;
-    }
+    public function __construct(private CategoryServiceInterface $categoryService) {}
 
     public function index()
     {
@@ -29,7 +26,8 @@ class CategoryApiController extends Controller
             'name' => 'required|string|max:255|unique:categories,name',
         ]);
 
-        $store = $this->categoryService->create($validated);
+        $dto = new CategoryDTO($validated);
+        $store = $this->categoryService->create($dto);
         
         if($store) {
             return response()->json([
@@ -51,7 +49,8 @@ class CategoryApiController extends Controller
             'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
         ]);
 
-        $update = $this->categoryService->update($category, $validated);
+        $dto = new CategoryDTO($validated);
+        $update = $this->categoryService->update($category, $dto);
 
         if($update) {
             return response()->json([

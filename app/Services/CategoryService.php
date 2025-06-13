@@ -3,18 +3,19 @@
 namespace App\Services;
 
 use App\Models\Category;
+use App\DTOs\CategoryDTO;
+use App\Interfaces\CategoryServiceInterface;
 
-class CategoryService
+class CategoryService implements CategoryServiceInterface
 {
-    public function create(array $data)
+    public function create(CategoryDTO $dto)
     {
-        return Category::create($data);
+        return Category::create($dto->toArray());
     }
 
-    public function update(Category $category, array $data)
+    public function update(Category $category, CategoryDTO $dto)
     {
-        $category->update($data);
-        return $category;
+        return $category->update($dto->toArray());
     }
 
     public function delete(Category $category)
