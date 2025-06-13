@@ -8,12 +8,12 @@ import InputError from "@/Components/InputError.vue";
 import Swal from "sweetalert2";
 import axios from "axios";
 
-const props = defineProps({
-    category: Object, // The category object passed from the controller
+const { category } = defineProps({
+    category: Object,
 });
 
 const form = useForm({
-    name: props.category.name, // Initialize form with existing category name
+    name: category.name,
 });
 
 const submitEdit = async () => {
@@ -34,12 +34,9 @@ const submitEdit = async () => {
         });
 
         if (result.isConfirmed) {
-            const response = await axios.put(
-                `/api/categories/${props.category.id}`,
-                {
-                    name: form.name,
-                }
-            );
+            const response = await axios.put(`/api/categories/${category.id}`, {
+                name: form.name,
+            });
 
             const message = response.data.message;
 
