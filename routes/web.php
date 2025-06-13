@@ -13,7 +13,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/categories', [CategoryController::class, 'index'])->name('category.index');
     Route::get('/categories/create', [CategoryController::class, 'create'])->name('category.create');
     Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('category.edit');
-
+    Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('category.show');
+    
     Route::get('/priorities', [PriorityController::class, 'index'])->name('priority.index');
     Route::get('/priorities/create', [PriorityController::class, 'create'])->name('priority.create');
     Route::get('/priorities/{id}/edit', [PriorityController::class, 'edit'])->name('priority.edit');

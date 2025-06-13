@@ -33,7 +33,7 @@ class TaskController extends Controller
     {
         $task = Task::with(['category', 'priority', 'status'])->findOrFail($id);
 
-        return Inertia::render('Tasks/Show', [
+        return Inertia::render('Tasks/View', [
             'task' => $task,
         ]);
     }

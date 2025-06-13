@@ -18,6 +18,13 @@ class CategoryController extends Controller
         return Inertia::render('Category/Create');
     }
 
+    public function show($id)
+    {
+        return Inertia::render('Category/View', [
+            'category' => Category::findOrFail($id),
+        ]);
+    }
+
     public function edit($id)
     {
         $category = Category::findOrFail($id);

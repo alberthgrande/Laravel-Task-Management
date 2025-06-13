@@ -34,22 +34,31 @@ const submitEdit = async () => {
         });
 
         if (result.isConfirmed) {
-            await axios.put(`/api/categories/${props.category.id}`, {
-                name: form.name,
-            });
+            const response = await axios.put(
+                `/api/categories/${props.category.id}`,
+                {
+                    name: form.name,
+                }
+            );
 
-            Swal.fire("Success!", "Category has been updated.", "success");
+            const message = response.data.message;
+
+            Swal.fire("Success!", message, "success");
 
             form.reset();
             router.visit("/categories");
         }
     } catch (error) {
+        const message =
+            error.response?.data?.message || "An unknown error occurred.";
+
         Swal.fire({
             icon: "error",
             title: "Error!",
-            text: "There was an error updating the category.",
+            text: message,
         });
-        console.error("Update failed:", error);
+
+        console.error("Failed to update category:", message);
     }
 };
 </script>

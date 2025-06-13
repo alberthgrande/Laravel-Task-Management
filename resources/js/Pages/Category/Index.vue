@@ -38,12 +38,19 @@ const deleteCategory = async (id) => {
 
     if (result.isConfirmed) {
         try {
-            await axios.delete(`/api/categories/${id}`);
+            const res = await axios.delete(`/api/categories/${id}`);
+            const message = res.data.message;
+
             categories.value = categories.value.filter((cat) => cat.id !== id);
-            Swal.fire("Deleted!", "Category has been deleted.", "success");
+
+            Swal.fire("Deleted!", message, "success");
         } catch (error) {
-            console.error("Delete failed:", error);
-            Swal.fire("Error", "Something went wrong.", "error");
+            const message =
+                error.response?.data?.message || "An unknown error occurred.";
+
+            Swal.fire("Error", message, "error");
+
+            console.error("Failed to delete category:", message);
         }
     }
 };
@@ -123,6 +130,17 @@ const deleteCategory = async (id) => {
                                         </td>
                                         <td class="px-6 py-4">
                                             <div class="flex gap-4">
+                                                <Link
+                                                    :href="
+                                                        route('category.show', {
+                                                            id: category.id,
+                                                        })
+                                                    "
+                                                    class="text-blue-600 hover:underline"
+                                                >
+                                                    View
+                                                </Link>
+
                                                 <Link
                                                     :href="
                                                         route('category.edit', {

@@ -37,11 +37,13 @@ const submitCategory = async () => {
         });
 
         if (result.isConfirmed) {
-            await axios.post(`/api/categories`, {
+            const response = await axios.post(`/api/categories`, {
                 name: form.name,
             });
 
-            Swal.fire("Success!", "Category has been added.", "success");
+            const message = response.data.message;
+
+            Swal.fire("Success!", message, "success");
 
             form.reset();
             router.visit("/categories");
@@ -66,10 +68,13 @@ const submitCategory = async () => {
                 }
             }, 1000);
         } else {
+            const message =
+                error.response?.data?.message || "An unknown error occurred.";
+
             Swal.fire({
                 icon: "error",
                 title: "Error!",
-                text: "There was an error creating the category.",
+                text: message,
             });
         }
     }

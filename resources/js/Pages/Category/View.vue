@@ -1,0 +1,1 @@
+<template>Category View</template>
