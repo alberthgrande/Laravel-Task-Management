@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Interfaces\PriorityServiceInterface;
+use App\Services\PriorityService;
 
 class PriorityServiceProvider extends ServiceProvider
 {
@@ -11,7 +13,11 @@ class PriorityServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        
+        $this->app->bind(
+            PriorityServiceInterface::class, 
+            PriorityService::class
+        );
     }
 
     /**
@@ -19,6 +25,6 @@ class PriorityServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        logger('✅ PriorityServiceProvider is active!');
     }
 }

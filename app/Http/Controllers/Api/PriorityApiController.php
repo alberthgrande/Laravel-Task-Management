@@ -5,17 +5,15 @@ namespace App\Http\Controllers\Api;
 use App\Models\Priority;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PriorityResource;
-use App\Services\PriorityService;
+use App\Interfaces\PriorityServiceInterface;
+use App\DTOs\PriorityDTO;
 use Illuminate\Http\Request;
 
 class PriorityApiController extends Controller
 {
 
-    protected $priorityService;
 
-    public function __construct(PriorityService $priorityService) {
-        $this->priorityService = $priorityService;
-    }
+    public function __construct(private PriorityServiceInterface $priorityService) {}
 
     public function index()
     {
@@ -28,7 +26,8 @@ class PriorityApiController extends Controller
             'name' => 'required|string|max:255|unique:priorities,name',
         ]);
 
-        $store = $this->priorityService->create($validated);
+        $dto = new PriorityDTO($validated);
+        $store = $this->priorityService->create($dto);
 
         if($store) {
             return response()->json([
@@ -50,7 +49,8 @@ class PriorityApiController extends Controller
             'name' => 'required|string|max:255|unique:categories,name,' . $priority->id,
         ]);
 
-        $update = $this->priorityService->update($priority, $validated);
+        $dto = new PriorityDTO($validated);
+        $update = $this->priorityService->update($priority, $dto);
 
         if($update) {
             return response()->json([
