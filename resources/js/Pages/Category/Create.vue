@@ -68,10 +68,6 @@ const submitCategory = async () => {
                 error.response.data.errors.name?.[0] || "Validation error"
             );
 
-            // setTimeout(() => {
-            //     form.clearErrors("name");
-            // }, 3000);
-
             countdown.value = 3;
             const interval = setInterval(() => {
                 countdown.value--;
