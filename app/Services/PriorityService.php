@@ -3,18 +3,19 @@
 namespace App\Services;
 
 use App\Models\Priority;
+use App\DTOs\PriorityDTO;
+use App\Interfaces\PriorityServiceInterface;
 
-class PriorityService
+class PriorityService implements PriorityServiceInterface
 {
-    public function create(array $data)
+    public function create(PriorityDTO $dto)
     {
-        return Priority::create($data);
+        return Priority::create($dto->toArray());
     }
 
-    public function update(Priority $priority, array $data)
+    public function update(Priority $priority, PriorityDTO $dto)
     {
-        $priority->update($data);
-        return $priority;
+        return $priority->update($dto->toArray());
     }
 
     public function delete(Priority $priority)

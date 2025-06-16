@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Models\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
-// use App\Services\CategoryService;
 use App\Interfaces\CategoryServiceInterface;
 use App\DTOs\CategoryDTO;
 use Illuminate\Http\Request;
