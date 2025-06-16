@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Interfaces\StatusServiceInterface;
+use App\Services\StatusService;
 
 class StatusServiceProvider extends ServiceProvider
 {
@@ -11,7 +13,10 @@ class StatusServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+            StatusServiceInterface::class, 
+            StatusService::class
+        );
     }
 
     /**
@@ -19,6 +24,6 @@ class StatusServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        logger('✅ PriorityServiceProvider is active!');
     }
 }
