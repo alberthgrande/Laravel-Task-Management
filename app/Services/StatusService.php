@@ -3,18 +3,19 @@
 namespace App\Services;
 
 use App\Models\Status;
+use App\DTOs\StatusDTO;
+use App\Interfaces\StatusServiceInterface;
 
-class StatusService
+class StatusService implements StatusServiceInterface
 {
-    public function create(array $data)
+    public function create(StatusDTO $dto)
     {
-        return Status::create($data);
+        return Status::create($dto->toArray());
     }
 
-    public function update(Status $status, array $data)
+    public function update(Status $status, StatusDTO $dto)
     {
-        $status->update($data);
-        return $status;
+        return $status->update($dto->toArray());
     }
 
     public function delete(Status $status)

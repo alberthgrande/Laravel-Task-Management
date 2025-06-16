@@ -5,16 +5,14 @@ namespace App\Http\Controllers\Api;
 use App\Models\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StatusResource;
-use App\Services\StatusService;
+use App\Interfaces\StatusServiceInterface;
+use App\DTOs\StatusDTO;
 use Illuminate\Http\Request;
 
 class StatusApiController extends Controller
 {
-    protected $statusService;
 
-    public function __construct(StatusService $statusService) {
-        $this->statusService = $statusService;
-    }
+    public function __construct(private StatusServiceInterface $statusService) {}
 
     public function index()
     {
@@ -27,7 +25,8 @@ class StatusApiController extends Controller
             'name' => 'required|string|max:255|unique:statuses,name',
         ]);
 
-        $store = $this->statusService->create($validated);
+        $dto = new StatusDTO($validated);
+        $store = $this->statusService->create($dto);
 
         if($store) {
             return response()->json([
@@ -49,7 +48,8 @@ class StatusApiController extends Controller
             'name' => 'required|string|max:255|unique:statuses,name,' . $status->id,
         ]);
 
-        $update = $this->statusService->update($status, $validated);
+        $dto = new StatusDTO($validated);
+        $update = $this->statusService->update($status, $dto);
 
         if($update) {
             return response()->json([
