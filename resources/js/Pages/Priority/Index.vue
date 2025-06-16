@@ -42,7 +42,20 @@ const deletePriority = async (id) => {
             priorities.value = priorities.value.filter((cat) => cat.id !== id);
 
             const message = response.data.message;
-            Swal.fire("Deleted!", message, "success");
+            let timerInterval;
+            Swal.fire({
+                title: "Success!",
+                text: message,
+                icon: "success",
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                willClose: () => {
+                    clearInterval(timerInterval);
+                },
+            });
         } catch (error) {
             const message =
                 error.response?.data?.message || "An unknown error occurred.";
